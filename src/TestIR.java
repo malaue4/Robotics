@@ -24,6 +24,17 @@ public class TestIR{
 			SampleProvider IRdistance = infraRed.getMode("Distance");
 			Sound.setVolume(20);
 			float [] sample = new float[IRdistance.sampleSize()];
+			IRdistance.fetchSample(sample, 0);
+			for(int i=0; i<IRdistance.sampleSize(); i++) {
+				System.out.print(sample[i]+", ");
+			}
+			System.out.println();
+			System.out.println(sample[0]);
+			pilot.travel(30);
+			IRdistance.fetchSample(sample, 0);
+			System.out.println(sample[0]);
+			
+			Button.waitForAnyEvent();
 			
 			int state = 0;
 			int d = 20;

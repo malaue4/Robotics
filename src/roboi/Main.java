@@ -25,22 +25,30 @@ import lejos.robotics.subsumption.Behavior;
  */
 public class Main {
 
-	public static MovePilot pilot;
+	public static RoboPilot pilot;
 	private static Arbitrator arbi;
 	public static final Random RANDOM = new Random();
 	public static NXTCam camera;
+	public static double approachDistance = 50;
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		camera = new NXTCam(SensorPort.S4);
+		System.out.println("Configuring Pilot");
 		setupPilot();
+		System.out.println("Configuring Camera");
+		camera = new NXTCam(SensorPort.S4);
+		camera.sendCommand('A'); // sort by size
+		camera.sendCommand('E'); // start tracking
+		System.out.println("Starting IR");
 		try(EV3IRSensor infraRed = new EV3IRSensor(SensorPort.S1)){
-			Sound.beepSequenceUp();
 			SampleProvider IRdistance = infraRed.getMode("Distance");
-			Behavior[] behaviorList = {new Wander(), new MoveToTarget(pilot, Motor.B, camera), new Escape(IRdistance), new Reject(), new Attack()};
+			System.out.println("Configuring Arbitrator");
+			Behavior[] behaviorList = {new Wander(), new MoveToTarget(pilot, Motor.B, camera, IRdistance), new Escape(IRdistance), new Reject(), new Attack(pilot, IRdistance, camera)};
 			arbi = new Arbitrator(behaviorList);
+			System.out.println("Ready!");
+			Sound.beepSequenceUp();
 			arbi.go();
 		}
 	}
@@ -53,11 +61,7 @@ public class Main {
 
 		Chassis chassis = new WheeledChassis(new Wheel[] { wheelL, wheelR }, WheeledChassis.TYPE_DIFFERENTIAL);
 
-		pilot = new MovePilot(chassis);
-		pilot.setAngularSpeed(450); 	// degrees per sec
-		pilot.setLinearSpeed(200); 	// mm per sec
-		pilot.setAngularAcceleration(200);
-		pilot.setLinearAcceleration(200);
+		pilot = new RoboPilot(chassis);
 	}
 
 }
