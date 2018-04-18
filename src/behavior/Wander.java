@@ -1,14 +1,16 @@
 package behavior;
-import java.util.Random;
 
 import lejos.hardware.Sound;
 import lejos.robotics.subsumption.Behavior;
 import roboi.Main;
+import roboi.RoboPilot;
 
 public class Wander implements Behavior {
 
-	public Wander() {
-		// TODO Auto-generated constructor stub
+	private RoboPilot pilot;
+
+	public Wander(RoboPilot pilot) {
+		this.pilot = pilot;
 	}
 
 	@Override
@@ -18,16 +20,15 @@ public class Wander implements Behavior {
 
 	@Override
 	public void action() {
-		// TODO Auto-generated method stub
 		System.out.println("Wander");
-		Main.pilot.travel(100+Main.RANDOM.nextInt(200));
-		Main.pilot.rotate(100-Main.RANDOM.nextInt(200));
+		//pilot.arc((2-Main.RANDOM.nextInt(4))*400, Main.RANDOM.nextInt(15)+25);
+		pilot.travel(100+Main.RANDOM.nextInt(200));
+		pilot.rotate(-100+Main.RANDOM.nextInt(200));
 	}
 
 	@Override
 	public void suppress() {
 		Main.pilot.stop();
-		Sound.beep();
 	}
 
 }

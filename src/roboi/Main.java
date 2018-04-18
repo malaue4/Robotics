@@ -11,13 +11,9 @@ import lejos.robotics.SampleProvider;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
-import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-/**
- * 
- */
 
 /**
  * @author Grp10
@@ -45,11 +41,18 @@ public class Main {
 		try(EV3IRSensor infraRed = new EV3IRSensor(SensorPort.S1)){
 			SampleProvider IRdistance = infraRed.getMode("Distance");
 			System.out.println("Configuring Arbitrator");
-			Behavior[] behaviorList = {new Wander(), new MoveToTarget(pilot, Motor.B, camera, IRdistance), new Escape(IRdistance), new Reject(), new Attack(pilot, IRdistance, camera)};
+			Behavior[] behaviorList = 
+				{
+						new Wander(pilot), 
+						new MoveToTarget(pilot, Motor.B, camera, IRdistance),
+						new Escape(IRdistance), 
+						new Reject(camera, IRdistance, Motor.B, pilot), 
+						new Attack(pilot, IRdistance, camera)
+				};
 			arbi = new Arbitrator(behaviorList);
+			arbi.go();
 			System.out.println("Ready!");
 			Sound.beepSequenceUp();
-			arbi.go();
 		}
 	}
 

@@ -21,8 +21,7 @@ public class Attack implements Behavior {
 	private NXTCam camera;
 	private RoboPilot pilot;
 	private SampleProvider IRdistance;
-	private int numberOfObjects;
-	private double obj_minimum_size;
+	private double obj_minimum_size = 6;
 	
 	/**
 	 * 
@@ -35,7 +34,7 @@ public class Attack implements Behavior {
 	
 	@Override
 	public boolean takeControl() {
-		numberOfObjects = camera.getNumberOfObjects();
+		int numberOfObjects = camera.getNumberOfObjects();
 		float[] sample = new float[IRdistance.sampleSize()];
 		IRdistance.fetchSample(sample , 0);
 		if(numberOfObjects > 0 && sample[0] <= Main.approachDistance) {

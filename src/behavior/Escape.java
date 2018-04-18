@@ -26,7 +26,7 @@ public class Escape implements Behavior {
 	public void action() {
 		System.out.println("Escape");
 		Sound.buzz();
-		Main.pilot.travel(-80);
+		Main.pilot.travel(-100);
 		Main.pilot.rotate(Main.RANDOM.nextInt(120)+120);
 	}
 

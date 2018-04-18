@@ -43,5 +43,7 @@ public class TestCam {
 			}
 			Sound.pause(INTERVAL);
 		}
+		
+		camera.close();
 	}
 }
