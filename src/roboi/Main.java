@@ -24,7 +24,7 @@ public class Main {
 	public static RoboPilot pilot;
 	private static Arbitrator arbi;
 	public static final Random RANDOM = new Random();
-	public static NXTCam camera;
+	//public static RoboCam camera;
 	public static double approachDistance = 50;
 	
 	/**
@@ -34,25 +34,24 @@ public class Main {
 		System.out.println("Configuring Pilot");
 		setupPilot();
 		System.out.println("Configuring Camera");
-		camera = new NXTCam(SensorPort.S4);
-		camera.sendCommand('A'); // sort by size
-		camera.sendCommand('E'); // start tracking
-		System.out.println("Starting IR");
-		try(EV3IRSensor infraRed = new EV3IRSensor(SensorPort.S1)){
-			SampleProvider IRdistance = infraRed.getMode("Distance");
-			System.out.println("Configuring Arbitrator");
-			Behavior[] behaviorList = 
-				{
-						new Wander(pilot), 
-						new MoveToTarget(pilot, Motor.B, camera, IRdistance),
-						new Escape(IRdistance), 
-						new Reject(camera, IRdistance, Motor.B, pilot), 
-						new Attack(pilot, IRdistance, camera)
-				};
-			arbi = new Arbitrator(behaviorList);
-			arbi.go();
-			System.out.println("Ready!");
-			Sound.beepSequenceUp();
+		try(RoboCam camera = new RoboCam(SensorPort.S4)){
+			System.out.println("Starting IR");
+			try(EV3IRSensor infraRed = new EV3IRSensor(SensorPort.S1)){
+				SampleProvider IRdistance = infraRed.getMode("Distance");
+				System.out.println("Configuring Arbitrator");
+				Behavior[] behaviorList = 
+					{
+							new Wander(pilot), 
+							new MoveToTarget(pilot, Motor.B, camera, IRdistance),
+							new Escape(IRdistance), 
+							new Reject(camera, IRdistance, Motor.B, pilot), 
+							new Attack(pilot, IRdistance, camera)
+					};
+				arbi = new Arbitrator(behaviorList);
+				arbi.go();
+				System.out.println("Ready!");
+				Sound.beepSequenceUp();
+			}
 		}
 	}
 
